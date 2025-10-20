@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Go: Interactive Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark background */
+            color: #d1d5db; /* Light gray text */
+        }
+        .code-block {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #374151;
+            color: #d1d5db;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #4b5563;
+        }
+        .tab {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+        }
+        #playground-code, #playground-output {
+            background-color: #0f172a; /* Even darker for playground */
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            height: 300px;
+        }
+        .quiz-option {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover {
+            border-color: #38bdf8;
+        }
+        .quiz-option.selected {
+            background-color: #1e40af;
+            border-color: #38bdf8;
+        }
+        .run-btn {
+            background-color: #0ea5e9;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .run-btn:hover {
+            background-color: #0284c7;
+        }
+        .run-btn:disabled {
+            background-color: #374151;
+            cursor: not-allowed;
+        }
+        .loader {
+            border: 4px solid #374151;
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-bold text-white">Learn Go</h1>
+            <p class="text-lg text-sky-400 mt-2">An Interactive Introduction for Beginners</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Learning Content Column -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-600 pb-2">Starter Basics</h2>
+                
+                <!-- Section 1: Hello World -->
+                <section id="hello-world" class="mb-8">
+                    <h3 class="text-xl font-semibold text-sky-400 mb-2">1. Your First Program: "Hello, World!"</h3>
+                    <p class="mb-4">
+                        Every Go program is made up of packages. The `main` package is special—it tells the compiler to create an executable file. The `main` function is where the program execution begins.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <code>package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}</code>
+                    </div>
+                </section>
+
+                <!-- Section 2: Variables -->
+                <section id="variables" class="mb-8">
+                    <h3 class="text-xl font-semibold text-sky-400 mb-2">2. Variables</h3>
+                    <p class="mb-4">
+                        Variables store data. In Go, you can declare a variable using `var`, or use the `:=` shorthand for declaring and initializing at the same time. The `:=` syntax is more common.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <code>package main
+
+import "fmt"
+
+func main() {
+    // Using var
+    var greeting string = "Hello from a variable!"
+    fmt.Println(greeting)
+
+    // Using shorthand (type is inferred)
+    message := "This is a shorter way."
+    fmt.Println(message)
+
+    number := 42
+    fmt.Println("The number is:", number)
+}</code>
+                    </div>
+                </section>
+
+                <!-- Section 3: Data Types -->
+                <section id="types" class="mb-8">
+                    <h3 class="text-xl font-semibold text-sky-400 mb-2">3. Basic Data Types</h3>
+                    <p class="mb-4">
+                        Go is a statically-typed language, meaning variables have a specific type. Here are the basics:
+                        <ul class="list-disc list-inside ml-4">
+                            <li>`string`: Text, like "Hello Go".</li>
+                            <li>`int`: Whole numbers, like 10, -5, 0.</li>
+                            <li>`float64`: Decimal numbers, like 3.14.</li>
+                            <li>`bool`: True or false values (`true` or `false`).</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <!-- Section 4: Control Flow -->
+                <section id="control-flow" class="mb-8">
+                    <h3 class="text-xl font-semibold text-sky-400 mb-2">4. Control Flow: `if` and `for`</h3>
+                    <p class="mb-4">
+                        Go uses `if`/`else` for conditional logic. Interestingly, `for` is Go's *only* looping construct. It can be used in several ways.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <code>package main
+
+import "fmt"
+
+func main() {
+    // if/else statement
+    age := 20
+    if age >= 18 {
+        fmt.Println("You can vote.")
+    } else {
+        fmt.Println("You cannot vote yet.")
+    }
+
+    // A classic for loop
+    fmt.Println("Looping from 0 to 2:")
+    for i := 0; i < 3; i++ {
+        fmt.Println(i)
+    }
+}</code>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Interactive Column -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-xl sticky top-8">
+                <div class="flex border-b border-gray-600 mb-4">
+                    <div id="tab-playground" class="tab active" onclick="switchTab('playground')">Go Playground</div>
+                    <div id="tab-quiz" class="tab" onclick="switchTab('quiz')">Test Your Knowledge</div>
+                </div>
+
+                <!-- Playground Content -->
+                <div id="content-playground">
+                    <p class="text-sm mb-4">Type your Go code below and hit "Run" to see the output. Feel free to experiment with the examples!</p>
+                    <textarea id="playground-code" class="w-full p-2 rounded-md font-mono text-sm" spellcheck="false"></textarea>
+                    
+                    <div class="flex items-center justify-between my-4">
+                        <button id="run-button" class="run-btn font-bold py-2 px-6 rounded-md flex items-center" onclick="runCode()">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            Run Code
+                        </button>
+                        <div id="loader" class="loader hidden"></div>
+                    </div>
+
+                    <h4 class="font-semibold text-white mb-2">Output:</h4>
+                    <pre id="playground-output" class="w-full p-2 rounded-md font-mono text-sm overflow-auto"></pre>
+                </div>
+
+                <!-- Quiz Content -->
+                <div id="content-quiz" class="hidden">
+                    <div id="quiz-container"></div>
+                    <button class="run-btn font-bold py-2 px-6 rounded-md mt-6" onclick="submitQuiz()">Submit Answers</button>
+                    <div id="quiz-results" class="mt-4"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Switching Logic ---
+        const tabs = ['playground', 'quiz'];
+        function switchTab(activeTab) {
+            tabs.forEach(tab => {
+                const tabElement = document.getElementById(`tab-${tab}`);
+                const contentElement = document.getElementById(`content-${tab}`);
+                if (tab === activeTab) {
+                    tabElement.classList.add('active');
+                    contentElement.classList.remove('hidden');
+                } else {
+                    tabElement.classList.remove('active');
+                    contentElement.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- Playground Logic ---
+        const codeTextarea = document.getElementById('playground-code');
+        const outputPre = document.getElementById('playground-output');
+        const runButton = document.getElementById('run-button');
+        const loader = document.getElementById('loader');
+
+        const defaultCode = `package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Welcome to the Go Playground!")
+	fmt.Println("Try changing this text and clicking Run.")
+}`;
+        codeTextarea.value = defaultCode;
+
+        async function runCode() {
+            const code = codeTextarea.value;
+            outputPre.textContent = '';
+            runButton.disabled = true;
+            loader.classList.remove('hidden');
+
+            try {
+                // We use a CORS proxy to avoid browser restrictions on calling the Go Playground API directly.
+                // This is a simple, free proxy for demonstration purposes.
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const apiUrl = 'https://go.dev/play/compile';
+                
+                const response = await fetch(proxyUrl + apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `version=2&body=${encodeURIComponent(code)}`,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.Errors) {
+                    outputPre.style.color = '#f87171'; // red
+                    outputPre.textContent = result.Errors;
+                } else if (result.Events) {
+                    outputPre.style.color = '#e2e8f0'; // default
+                    let output = '';
+                    result.Events.forEach(event => {
+                        output += event.Message;
+                    });
+                    outputPre.textContent = output;
+                } else {
+                     outputPre.textContent = "No output produced.";
+                }
+
+            } catch (error) {
+                outputPre.style.color = '#f87171'; // red
+                outputPre.textContent = `An error occurred: ${error.message}\n\nThe public CORS proxy might be temporarily unavailable. Please try again later.`;
+            } finally {
+                runButton.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+        
+        // --- Copy Code Logic ---
+        function copyCode(button) {
+            const codeElement = button.nextElementSibling;
+            const code = codeElement.innerText;
+            
+            // Using a temporary textarea to copy
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = code;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+
+        // --- Quiz Logic ---
+        const quizContainer = document.getElementById('quiz-container');
+        const quizResults = document.getElementById('quiz-results');
+
+        const quizData = [
+            {
+                question: "What is the correct shorthand to declare and initialize a new variable named `score` with a value of `100`?",
+                options: ["var score = 100", "score := 100", "score = 100", "int score = 100"],
+                answer: "score := 100"
+            },
+            {
+                question: "Which package do you need to import to print text to the console?",
+                options: ["main", "io", "fmt", "strings"],
+                answer: "fmt"
+            },
+            {
+                question: "What is Go's only looping keyword?",
+                options: ["loop", "while", "for", "repeat"],
+                answer: "for"
+            },
+            {
+                question: "What function is the entry point for an executable Go program?",
+                options: ["func start()", "func run()", "func main()", "func program()"],
+                answer: "func main()"
+            }
+        ];
+
+        function buildQuiz() {
+            let quizHTML = '';
+            quizData.forEach((q, index) => {
+                quizHTML += `<div class="mb-6">
+                    <p class="font-semibold text-white mb-3">${index + 1}. ${q.question}</p>
+                    <div class="space-y-2">`;
+                
+                q.options.forEach(option => {
+                    quizHTML += `<label class="quiz-option block p-3 rounded-md cursor-pointer">
+                        <input type="radio" name="question${index}" value="${option}" class="hidden">
+                        <span>${option}</span>
+                    </label>`;
+                });
+                
+                quizHTML += `</div></div>`;
+            });
+            quizContainer.innerHTML = quizHTML;
+            
+            // Add click listeners to options
+            document.querySelectorAll('.quiz-option').forEach(item => {
+                item.addEventListener('click', event => {
+                    const selectedLabel = event.currentTarget;
+                    const radioName = selectedLabel.querySelector('input').name;
+                    // Deselect others in the same group
+                    document.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    // Select the clicked one
+                    selectedLabel.classList.add('selected');
+                    selectedLabel.querySelector('input').checked = true;
+                });
+            });
+        }
+        
+        function submitQuiz() {
+            let score = 0;
+            let resultsHTML = '<h3 class="text-xl font-bold mb-2">Quiz Results:</h3><ul class="space-y-2">';
+
+            quizData.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    if (selectedOption.value === q.answer) {
+                        score++;
+                        resultsHTML += `<li class="text-green-400">✓ Question ${index + 1}: Correct!</li>`;
+                    } else {
+                        resultsHTML += `<li class="text-red-400">✗ Question ${index + 1}: Incorrect. The correct answer was "${q.answer}".</li>`;
+                    }
+                } else {
+                    resultsHTML += `<li class="text-yellow-400">? Question ${index + 1}: Not answered.</li>`;
+                }
+            });
+
+            resultsHTML += `</ul><p class="text-2xl font-bold mt-4 text-white">Your score: ${score} out of ${quizData.length}</p>`;
+            quizResults.innerHTML = resultsHTML;
+        }
+
+        // Initialize the app
+        buildQuiz();
+
+    </script>
+</body>
+</html>
